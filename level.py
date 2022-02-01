@@ -1,3 +1,4 @@
+from debug import debug
 import pygame
 from settings import *
 from tile import Tile
@@ -23,9 +24,11 @@ class Level:
                 if column == 'x':
                     Tile((x, y), [self.visible_sprites, self.obstacles_sprites])
                 elif column == 'p':
-                    Player((x, y), [self.visible_sprites])
+                    self.player = Player((x, y), [self.visible_sprites])
 
 
     def run(self):
         # update and draw the level
         self.visible_sprites.draw(self.display_surface)
+        self.visible_sprites.update()
+        debug(self.player.direction)
