@@ -29,7 +29,7 @@ class Level:
 
     def run(self):
         # update and draw the level
-        self.visible_sprites.custom_draw()
+        self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
         # debug(self.player.direction)
 
@@ -39,10 +39,18 @@ class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
         self.display_surface = pygame.display.get_surface()
+        self.half_width, self.half_height = self.display_surface.get_size()
+        self.half_width, self.half_height = self.half_width//2, self.half_height//2
         # offset is used to move the sprite to a new position
         self.offset = pygame.math.Vector2()
     
-    def custom_draw(self):
+    def custom_draw(self, player: Player):
+
+        # get the offset from player's current position
+        self.offset.x = player.rect.centerx - self.half_width
+        self.offset.y = player.rect.centery - self.half_height
+
+        # move all sprites accordingly to player position
         for sprite in self.sprites():
-            offset_pos = sprite.rect.topleft + self.offset
+            offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
