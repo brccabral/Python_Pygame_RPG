@@ -28,6 +28,11 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = 0
     
     def move(self, speed):
+        # limit player speed when going diagonal
+        # diagonal direction increases vector length
+        # use normalize to set vector size to 1
+        if self.direction.magnitude() != 0:
+            self.direction = self.direction.normalize()
         self.rect.center += self.direction * speed
     
     def update(self):
