@@ -3,7 +3,7 @@ import pygame
 from settings import *
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos: tuple, groups: list, obstacles_sprites: pygame.sprite.Group):
+    def __init__(self, pos: tuple, groups: List[pygame.sprite.Group], obstacles_sprites: pygame.sprite.Group):
         super().__init__(groups)
         self.image = pygame.image.load('graphics/test/player.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
