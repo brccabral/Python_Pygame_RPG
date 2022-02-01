@@ -24,7 +24,7 @@ class Level:
                 if column == 'x':
                     Tile((x, y), [self.visible_sprites, self.obstacles_sprites])
                 elif column == 'p':
-                    self.player = Player((x, y), [self.visible_sprites])
+                    self.player = Player((x, y), [self.visible_sprites], self.obstacles_sprites)
 
 
     def run(self):
