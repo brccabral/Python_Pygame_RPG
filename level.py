@@ -14,6 +14,8 @@ from magic import MagicController
 class Level:
     def __init__(self):
 
+        self.game_paused = False
+
         # get the display surface
         self.display_surface = pygame.display.get_surface()
 
@@ -131,13 +133,21 @@ class Level:
     def add_exp(self, amount):
         self.player.exp += amount
 
+    def toggle_menu(self):
+        self.game_paused = not self.game_paused
+        
     def run(self):
         # update and draw the level
-        self.visible_sprites.custom_draw(self.player)
-        self.visible_sprites.update()
-        self.visible_sprites.enemy_update(self.player)
-        self.player_attack_logic()
+        self.visible_sprites.custom_draw(self.player) # uses YSortCameraGroup to draw from player position
         self.ui.display(self.player)
+
+        if self.game_paused:
+            # display upgrade menu
+            pass
+        else:
+            self.visible_sprites.update()
+            self.visible_sprites.enemy_update(self.player)
+            self.player_attack_logic()
         # debug(self.player.direction)
 
 class YSortCameraGroup(pygame.sprite.Group):
