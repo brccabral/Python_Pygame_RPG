@@ -9,7 +9,8 @@ from support import import_folder
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos: tuple, groups: List[pygame.sprite.Group], 
                 obstacles_sprites: pygame.sprite.Group, 
-                create_attack: Callable, destroy_attack: Callable):
+                create_attack: Callable, destroy_attack: Callable,
+                create_magic: Callable):
         super().__init__(groups)
         self.image = pygame.image.load('graphics/test/player.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
@@ -37,6 +38,14 @@ class Player(pygame.sprite.Sprite):
         self.can_switch_weapon = True
         self.weapon_switch_time = None
         self.weapon_switch_cooldown = 200
+
+        # magic
+        self.create_magic = create_magic
+        self.magic_index = 0
+        self.magic = list(magic_data.keys())[self.magic_index]
+        self.can_switch_magic = True
+        self.magic_switch_time = None
+
 
         # stats
         self.stats = {'health': 100, 'energy': 60, 'attack': 10, 'magic': 4, 'speed': 5}
@@ -123,6 +132,10 @@ class Player(pygame.sprite.Sprite):
             # print('magic')
             self.attacking = True
             self.attack_time = pygame.time.get_ticks()
+            style = list(magic_data.keys())[self.magic_index]
+            strength = list(magic_data.values())[self.magic_index]['strength']
+            cost = list(magic_data.values())[self.magic_index]['cost']
+            self.create_magic(style, strength, cost)
         
         # change weapon
         if keys[pygame.K_q] and self.can_switch_weapon: 

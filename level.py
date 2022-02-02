@@ -56,10 +56,21 @@ class Level:
         #         elif column == 'p':
         #             self.player = Player((x, y), [self.visible_sprites], self.obstacles_sprites)
                     
-        self.player = Player((2000, 1430), [self.visible_sprites], self.obstacles_sprites, self.create_attack, self.destroy_attack)
+        self.player = Player(
+                        (2000, 1430), 
+                        [self.visible_sprites], 
+                        self.obstacles_sprites, 
+                        self.create_attack, 
+                        self.destroy_attack,
+                        self.create_magic)
 
     def create_attack(self):
         self.current_attack = Weapon(self.player, [self.visible_sprites])
+
+    def create_magic(self, style, strength, cost):
+        print(f'{style=}')
+        print(f'{strength=}')
+        print(f'{cost=}')
 
     def destroy_attack(self):
         if self.current_attack:
