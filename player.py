@@ -98,6 +98,13 @@ class Player(Entity):
         self.image = animations[int(self.frame_index)]
         self.rect = self.image.get_rect(center = self.hitbox.center)
 
+        # flicker if hit
+        if not self.vulnerable:
+            alpha = self.wave_value()
+            self.image.set_alpha(alpha)
+        else:
+            self.image.set_alpha(255)
+
     def input(self):
         if self.attacking:
             return
