@@ -30,6 +30,8 @@ class Player(pygame.sprite.Sprite):
         self.frame_index = 0
         self.animation_speed = 0.15
 
+        self.switch_cooldown = 200 # same for weapon and magic
+
         # weapon
         self.create_attack = create_attack
         self.destroy_attack = destroy_attack
@@ -37,7 +39,6 @@ class Player(pygame.sprite.Sprite):
         self.weapon = list(weapon_data.keys())[self.weapon_index]
         self.can_switch_weapon = True
         self.weapon_switch_time = None
-        self.weapon_switch_cooldown = 200
 
         # magic
         self.create_magic = create_magic
@@ -147,6 +148,16 @@ class Player(pygame.sprite.Sprite):
                 self.weapon_index += 1
             self.weapon = list(weapon_data.keys())[self.weapon_index]
 
+        # change magic
+        if keys[pygame.K_e] and self.can_switch_magic: 
+            self.can_switch_magic = False
+            self.magic_switch_time = pygame.time.get_ticks()
+            if self.magic_index >= len(list(magic_data.keys())) - 1:
+                self.magic_index = 0
+            else:
+                self.magic_index += 1
+            self.magic = list(magic_data.keys())[self.magic_index]
+
     def cooldowns(self):
         current_time = pygame.time.get_ticks()
         if self.attacking:
@@ -155,8 +166,12 @@ class Player(pygame.sprite.Sprite):
                 self.destroy_attack()
         
         if not self.can_switch_weapon:
-            if current_time - self.weapon_switch_time >= self.weapon_switch_cooldown:
+            if current_time - self.weapon_switch_time >= self.switch_cooldown:
                 self.can_switch_weapon = True
+        
+        if not self.can_switch_magic:
+            if current_time - self.magic_switch_time >= self.switch_cooldown:
+                self.can_switch_magic = True
     
     def move(self, speed):
         # limit player speed when going diagonal
