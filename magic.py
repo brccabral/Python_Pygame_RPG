@@ -13,6 +13,8 @@ class MagicController:
             player.energy -= cost
             if player.health >= player.stats['health']:
                 player.health = player.stats['health']
+            self.animation_controller.create_particles('aura', player.rect.center, groups)
+            self.animation_controller.create_particles('heal', player.rect.center + pygame.math.Vector2(0, -60), groups)
 
     def flame(self):
         pass
