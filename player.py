@@ -1,5 +1,5 @@
 from debug import debug
-from typing import List
+from typing import Dict, List
 import pygame
 from settings import *
 from os import walk
@@ -13,7 +13,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0, -26) # same center, but smaller Y size
 
-        # moviment
+        # movement
         self.direction = pygame.math.Vector2()
         self.speed = 5
         self.attacking = False
@@ -25,10 +25,12 @@ class Player(pygame.sprite.Sprite):
         # graphics setup
         self.import_player_assets()
         self.status = 'down'
+        self.frame_index = 0
+        self.animation_speed = 0.15
     
     def import_player_assets(self):
         character_path = 'graphics/player'
-        self.animations = dict()
+        self.animations: Dict[str, List[pygame.Surface]] = dict()
         _, animations, _ = next(walk(character_path))
         for animation in animations:
             for _, __, files in walk(character_path + '/' + animation):
@@ -54,7 +56,22 @@ class Player(pygame.sprite.Sprite):
             if 'attack' in self.status:
                 self.status = self.status.replace('_attack', '')
 
+    def animate(self):
+        animations = self.animations[self.status]
+        
+        # loop over the frame index
+        self.frame_index += self.animation_speed
+        if self.frame_index >= len(animations):
+            self.frame_index = 0
+        
+        # set the image
+        self.image = animations[int(self.frame_index)]
+        self.rect = self.image.get_rect(center = self.hitbox.center)
+
     def input(self):
+        if self.attacking:
+            return
+        
         keys = pygame.key.get_pressed()
 
         # move input
@@ -77,14 +94,14 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = 0
         
         # attack input
-        if keys[pygame.K_SPACE] and not self.attacking:
-            print('attack')
+        if keys[pygame.K_SPACE]:
+            # print('attack')
             self.attacking = True
             self.attack_time = pygame.time.get_ticks()
         
         # magic input
-        if keys[pygame.K_LCTRL] and not self.attacking:
-            print('magic')
+        if keys[pygame.K_LCTRL]:
+            # print('magic')
             self.attacking = True
             self.attack_time = pygame.time.get_ticks()
 
@@ -130,6 +147,7 @@ class Player(pygame.sprite.Sprite):
         self.move(self.speed)
         self.cooldowns()
         self.get_status()
+        self.animate()
         debug(self.status)
 
 if __name__ == '__main__':
