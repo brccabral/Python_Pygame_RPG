@@ -43,12 +43,20 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.half_width, self.half_height = self.half_width//2, self.half_height//2
         # offset is used to move the sprite to a new position
         self.offset = pygame.math.Vector2()
+
+        # creating the floor
+        self.floor_surface = pygame.image.load('graphics/tilemap/ground.png').convert_alpha()
+        self.floor_rect = self.floor_surface.get_rect(topleft = (0,0))
     
     def custom_draw(self, player: Player):
 
         # get the offset from player's current position
         self.offset.x = player.rect.centerx - self.half_width
         self.offset.y = player.rect.centery - self.half_height
+
+        # drawing the floor
+        floor_offset_pos = self.floor_rect.topleft - self.offset
+        self.display_surface.blit(self.floor_surface, floor_offset_pos)
 
         # move all sprites accordingly to player position
         # sorted makes sure that sprites on top of the screen 
