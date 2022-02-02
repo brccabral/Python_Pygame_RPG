@@ -1,6 +1,52 @@
 import pygame
 from support import import_folder
 
+class AnimationController:
+    def __init__(self):
+        self.frames = {
+			# magic
+			'flame': import_folder('graphics/particles/flame/frames'),
+			'aura': import_folder('graphics/particles/aura'),
+			'heal': import_folder('graphics/particles/heal/frames'),
+			
+			# attacks 
+			'claw': import_folder('graphics/particles/claw'),
+			'slash': import_folder('graphics/particles/slash'),
+			'sparkle': import_folder('graphics/particles/sparkle'),
+			'leaf_attack': import_folder('graphics/particles/leaf_attack'),
+			'thunder': import_folder('graphics/particles/thunder'),
+
+			# monster deaths
+			'squid': import_folder('graphics/particles/smoke_orange'),
+			'raccoon': import_folder('graphics/particles/raccoon'),
+			'spirit': import_folder('graphics/particles/nova'),
+			'bamboo': import_folder('graphics/particles/bamboo'),
+			
+			# leafs 
+			'leaf': (
+				import_folder('graphics/particles/leaf1'),
+				import_folder('graphics/particles/leaf2'),
+				import_folder('graphics/particles/leaf3'),
+				import_folder('graphics/particles/leaf4'),
+				import_folder('graphics/particles/leaf5'),
+				import_folder('graphics/particles/leaf6'),
+				self.reflect_images(import_folder('graphics/particles/leaf1')),
+				self.reflect_images(import_folder('graphics/particles/leaf2')),
+				self.reflect_images(import_folder('graphics/particles/leaf3')),
+				self.reflect_images(import_folder('graphics/particles/leaf4')),
+				self.reflect_images(import_folder('graphics/particles/leaf5')),
+				self.reflect_images(import_folder('graphics/particles/leaf6'))
+				)
+			}
+    
+    def reflect_images(self, frames):
+        flipped_frames = []
+        for frame in frames:
+            flipped_frame = pygame.transform.flip(frame, True, False) # flip horizontal
+            flipped_frames.append(flipped_frame)
+        return flipped_frames
+
+
 class ParticleEffect(pygame.sprite.Sprite):
     def __init__(self, pos, animation_frames, groups):
         super().__init__(groups)
