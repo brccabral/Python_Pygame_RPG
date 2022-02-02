@@ -40,8 +40,8 @@ class Player(pygame.sprite.Sprite):
 
         # stats
         self.stats = {'health': 100, 'energy': 60, 'attack': 10, 'magic': 4, 'speed': 5}
-        self.health = self.stats['health']
-        self.energy = self.stats['energy']
+        self.health = self.stats['health']-20
+        self.energy = self.stats['energy']-10
         self.speed = self.stats['speed']
         self.exp = 123
 
@@ -182,7 +182,7 @@ class Player(pygame.sprite.Sprite):
         self.cooldowns()
         self.get_status()
         self.animate()
-        debug(self.status)
+        # debug(self.status)
 
 if __name__ == '__main__':
     from main import run_game
