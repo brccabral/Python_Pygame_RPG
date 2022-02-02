@@ -48,6 +48,11 @@ class Enemy(Entity):
         self.attack_time = None
         self.attack_cooldown = 400
 
+        # invincibility timer
+        self.vulnerable = True
+        self.hit_time = None
+        self.invincibility_cooldown = 300
+
     def import_graphics(self, name):
         self.animations: Dict[str, List[pygame.Surface]] = {'idle': [], 'move': [], 'attack': []}
         path = f'graphics/monsters/{name}/'
@@ -76,11 +81,6 @@ class Enemy(Entity):
             direction = pygame.math.Vector2()
         return (distance, direction)
 
-    def update(self):
-        self.move(self.speed)
-        self.animate()
-        self.cooldowns()
-
     def actions(self, player: Player):
         if self.status == 'attack':
             self.attack_time = pygame.time.get_ticks()
@@ -102,10 +102,31 @@ class Enemy(Entity):
         self.rect = self.image.get_rect(center = self.hitbox.center)
 
     def cooldowns(self):
+        current_time = pygame.time.get_ticks()
         if not self.can_attack:
-            current_time = pygame.time.get_ticks()
             if current_time - self.attack_time >= self.attack_cooldown:
                 self.can_attack = True
+        
+        if not self.vulnerable:
+            if current_time - self.hit_time >= self.invincibility_cooldown:
+                self.vulnerable = True
+
+    def get_damage(self, player, attack_type):
+        if self.vulnerable:
+            if attack_type == 'weapon':
+                self.health -= player.get_full_weapon_damage()
+            self.vulnerable = False
+            self.hit_time = pygame.time.get_ticks()
+
+    def check_death(self):
+        if self.health <= 0:
+            self.kill()
+
+    def update(self):
+        self.move(self.speed)
+        self.animate()
+        self.cooldowns()
+        self.check_death()
 
     def enemy_update(self, player: Player):
         self.get_status(player)
