@@ -1,5 +1,5 @@
 from debug import debug
-from typing import Dict, List
+from typing import Callable, Dict, List
 import pygame
 from settings import *
 from os import walk
@@ -7,7 +7,7 @@ from os import walk
 from support import import_folder
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos: tuple, groups: List[pygame.sprite.Group], obstacles_sprites: pygame.sprite.Group):
+    def __init__(self, pos: tuple, groups: List[pygame.sprite.Group], obstacles_sprites: pygame.sprite.Group, create_attack: Callable):
         super().__init__(groups)
         self.image = pygame.image.load('graphics/test/player.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
@@ -19,6 +19,7 @@ class Player(pygame.sprite.Sprite):
         self.attacking = False
         self.attack_cooldown = 400
         self.attack_time = None
+        self.create_attack = create_attack
 
         self.obstacles_sprites = obstacles_sprites
 
@@ -98,6 +99,7 @@ class Player(pygame.sprite.Sprite):
             # print('attack')
             self.attacking = True
             self.attack_time = pygame.time.get_ticks()
+            self.create_attack()
         
         # magic input
         if keys[pygame.K_LCTRL]:

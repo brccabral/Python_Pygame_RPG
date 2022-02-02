@@ -5,6 +5,7 @@ from settings import *
 from support import import_csv_layout, import_folder
 from tile import Tile
 from player import Player
+from weapon import Weapon
 
 class Level:
     def __init__(self):
@@ -47,8 +48,10 @@ class Level:
         #         elif column == 'p':
         #             self.player = Player((x, y), [self.visible_sprites], self.obstacles_sprites)
                     
-        self.player = Player((2000, 1430), [self.visible_sprites], self.obstacles_sprites)
+        self.player = Player((2000, 1430), [self.visible_sprites], self.obstacles_sprites, self.create_attack)
 
+    def create_attack(self):
+        Weapon(self.player, [self.visible_sprites])
 
     def run(self):
         # update and draw the level
