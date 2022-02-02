@@ -94,7 +94,7 @@ class Level:
         if style == 'heal':
             self.magic_controller.heal(self.player, strength, cost, [self.visible_sprites])
         elif style == 'flame':
-            pass
+            self.magic_controller.flame(self.player, cost, [self.visible_sprites])
 
     def destroy_attack(self):
         if self.current_attack:
