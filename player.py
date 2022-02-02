@@ -7,7 +7,9 @@ from os import walk
 from support import import_folder
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos: tuple, groups: List[pygame.sprite.Group], obstacles_sprites: pygame.sprite.Group, create_attack: Callable):
+    def __init__(self, pos: tuple, groups: List[pygame.sprite.Group], 
+                obstacles_sprites: pygame.sprite.Group, 
+                create_attack: Callable, destroy_attack: Callable):
         super().__init__(groups)
         self.image = pygame.image.load('graphics/test/player.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
@@ -30,6 +32,7 @@ class Player(pygame.sprite.Sprite):
 
         # weapon
         self.create_attack = create_attack
+        self.destroy_attack = destroy_attack
         self.weapon_index = 0
         self.weapon = list(weapon_data.keys())[self.weapon_index]
 
@@ -117,6 +120,7 @@ class Player(pygame.sprite.Sprite):
         if self.attacking:
             if current_time - self.attack_time >= self.attack_cooldown:
                 self.attacking = False
+                self.destroy_attack()
     
     def move(self, speed):
         # limit player speed when going diagonal

@@ -17,6 +17,9 @@ class Level:
         self.visible_sprites = YSortCameraGroup()
         self.obstacles_sprites = pygame.sprite.Group()
 
+        # attack sprites
+        self.current_attack = None
+
         self.create_map()
     
     def create_map(self):
@@ -48,10 +51,15 @@ class Level:
         #         elif column == 'p':
         #             self.player = Player((x, y), [self.visible_sprites], self.obstacles_sprites)
                     
-        self.player = Player((2000, 1430), [self.visible_sprites], self.obstacles_sprites, self.create_attack)
+        self.player = Player((2000, 1430), [self.visible_sprites], self.obstacles_sprites, self.create_attack, self.destroy_attack)
 
     def create_attack(self):
-        Weapon(self.player, [self.visible_sprites])
+        self.current_attack = Weapon(self.player, [self.visible_sprites])
+
+    def destroy_attack(self):
+        if self.current_attack:
+            self.current_attack.kill()
+        self.current_attack = None
 
     def run(self):
         # update and draw the level
