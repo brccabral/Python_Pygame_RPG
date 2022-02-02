@@ -63,9 +63,18 @@ class Enemy(Entity):
 
     def update(self):
         self.move(self.speed)
+
+    def actions(self, player: Player):
+        if self.status == 'attack':
+            print('attack')
+        elif self.status == 'move':
+            self.distance, self.direction = self.find_player(player)
+        else:
+            self.direction = pygame.math.Vector2()
     
     def enemy_update(self, player: Player):
         self.get_status(player)
+        self.actions(player)
 
 if __name__ == '__main__':
     from main import run_game
