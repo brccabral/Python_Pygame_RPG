@@ -1,6 +1,9 @@
 from typing import List
 import pygame
 from settings import *
+from os import walk
+
+from support import import_folder
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos: tuple, groups: List[pygame.sprite.Group], obstacles_sprites: pygame.sprite.Group):
@@ -17,7 +20,22 @@ class Player(pygame.sprite.Sprite):
         self.attack_time = None
 
         self.obstacles_sprites = obstacles_sprites
+
+        # graphics setup
+        self.import_player_assets()
     
+    def import_player_assets(self):
+        character_path = 'graphics/player'
+        self.animations = dict()
+        _, animations, _ = next(walk(character_path))
+        for animation in animations:
+            for _, __, files in walk(character_path + '/' + animation):
+                # print(f'{animation} {files}')
+                self.animations[animation] = import_folder(character_path + '/' + animation)
+        # print(self.animations)
+        
+
+
     def input(self):
         keys = pygame.key.get_pressed()
 
