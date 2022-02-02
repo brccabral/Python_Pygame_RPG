@@ -63,6 +63,7 @@ class Enemy(Entity):
 
     def update(self):
         self.move(self.speed)
+        self.animate()
 
     def actions(self, player: Player):
         if self.status == 'attack':
@@ -72,6 +73,16 @@ class Enemy(Entity):
         else:
             self.direction = pygame.math.Vector2()
     
+    def animate(self):
+        animation = self.animations[self.status]
+
+        self.frame_index += self.animation_speed
+        if self.frame_index >= len(animation):
+            self.frame_index = 0
+        
+        self.image = animation[int(self.frame_index)]
+        self.rect = self.image.get_rect(center = self.hitbox.center)
+
     def enemy_update(self, player: Player):
         self.get_status(player)
         self.actions(player)
