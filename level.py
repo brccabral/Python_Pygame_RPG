@@ -118,6 +118,7 @@ class Level:
             self.player.vulnerable = False
             self.player.hurt_time = pygame.time.get_ticks()
             # spawn particles
+            self.animation_controller.create_particles(attack_type, self.player.rect.center, [self.visible_sprites])
 
     def run(self):
         # update and draw the level
