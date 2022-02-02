@@ -11,14 +11,17 @@ class Enemy(Entity):
             pos: Tuple, 
             groups: List[pygame.sprite.Group], 
             obstacles_sprites: pygame.sprite.Group, 
-            damage_player: Callable):
+            damage_player: Callable,
+            trigger_death_particles: Callable):
         """Create an enemy
 
         Args:
             monster_name (str): kind of monster
             pos (tuple(int,int)): position x, y
             groups (list[pygame Group]): groups that this object belongs to, or game category
-            obstacles_sprites (pygame Group): [description]
+            obstacles_sprites (pygame Group): group that blocks movement
+            damage_player (function): callback funtion to damage player
+            trigger_death_particles (function): callback function to create particles when enemy dies
         """
 
         # general setup
@@ -53,6 +56,7 @@ class Enemy(Entity):
         self.attack_time = None
         self.attack_cooldown = 400
         self.damage_player = damage_player
+        self.trigger_death_particles = trigger_death_particles
 
         # invincibility timer
         self.vulnerable = True
@@ -148,6 +152,7 @@ class Enemy(Entity):
     def check_death(self):
         if self.health <= 0:
             self.kill()
+            self.trigger_death_particles(self.rect.center, self.monster_name)
 
     def update(self):
         self.hit_reaction()
