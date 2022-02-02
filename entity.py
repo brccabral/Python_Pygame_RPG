@@ -3,6 +3,13 @@ import pygame
 class Entity(pygame.sprite.Sprite):
     def __init__(self, groups):
         super().__init__(groups)
+
+        # movement
+        self.direction = pygame.math.Vector2()
+
+        # graphics setup
+        self.frame_index = 0
+        self.animation_speed = 0.15
     
     def move(self, speed):
         # limit player speed when going diagonal
