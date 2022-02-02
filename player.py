@@ -19,7 +19,6 @@ class Player(pygame.sprite.Sprite):
         self.attacking = False
         self.attack_cooldown = 400
         self.attack_time = None
-        self.create_attack = create_attack
 
         self.obstacles_sprites = obstacles_sprites
 
@@ -28,6 +27,12 @@ class Player(pygame.sprite.Sprite):
         self.status = 'down'
         self.frame_index = 0
         self.animation_speed = 0.15
+
+        # weapon
+        self.create_attack = create_attack
+        self.weapon_index = 0
+        self.weapon = list(weapon_data.keys())[self.weapon_index]
+
     
     def import_player_assets(self):
         character_path = 'graphics/player'
