@@ -34,7 +34,9 @@ class UI():
         y -= 20
         text_rect = text_surface.get_rect(bottomright = (x, y))
 
+        pygame.draw.rect(self.display_surface, UI_BG_COLOR, text_rect.inflate(20, 20))
         self.display_surface.blit(text_surface, text_rect)
+        pygame.draw.rect(self.display_surface, UI_BORDER_COLOR, text_rect.inflate(20, 20), 3)
 
     def display(self, player: Player):
         self.show_bar(player.health, player.stats['health'], self.health_bar_rect, HEALTH_COLOR)
