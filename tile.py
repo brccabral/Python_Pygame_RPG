@@ -9,3 +9,7 @@ class Tile(pygame.sprite.Sprite):
         self.image = surface
         self.rect = self.image.get_rect(topleft = pos)
         self.hitbox = self.rect.inflate(0, -10) # same center, but smaller Y size
+
+if __name__ == '__main__':
+    from main import run_game
+    run_game()

@@ -1,6 +1,7 @@
 from debug import debug
 import pygame
 from settings import *
+from support import import_csv_layout
 from tile import Tile
 from player import Player
 
@@ -17,10 +18,17 @@ class Level:
         self.create_map()
     
     def create_map(self):
-        # for row_index, row in enumerate(WORLD_MAP):
-        #     for column_index, column in enumerate(row):
-        #         x = column_index * TILESIZE
-        #         y = row_index * TILESIZE
+        layouts = {
+            'boundary': import_csv_layout('map/map_FloorBlocks.csv')
+        }
+        for style, layout in layouts.items():
+            for row_index, row in enumerate(layout):
+                for column_index, column in enumerate(row):
+                    if column != '-1':
+                        x = column_index * TILESIZE
+                        y = row_index * TILESIZE
+                        if style == 'boundary':
+                            Tile((x,y), [self.visible_sprites, self.obstacles_sprites], 'invisible')
         #         if column == 'x':
         #             Tile((x, y), [self.visible_sprites, self.obstacles_sprites])
         #         elif column == 'p':
@@ -66,3 +74,7 @@ class YSortCameraGroup(pygame.sprite.Group):
         for sprite in sorted(self.sprites(), key = lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
+
+if __name__ == '__main__':
+    from main import run_game
+    run_game()
