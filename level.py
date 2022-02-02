@@ -22,10 +22,11 @@ class Level:
         layouts = {
             'boundary': import_csv_layout('map/map_FloorBlocks.csv'),
             'grass': import_csv_layout('map/map_Grass.csv'),
-            'object': import_csv_layout('map/map_LargeObjects.csv'),
+            'object': import_csv_layout('map/map_Objects.csv'),
         }
         graphics = {
-            'grass': import_folder('graphics/grass')
+            'grass': import_folder('graphics/grass'),
+            'objects': import_folder('graphics/objects')
         }
         for style, layout in layouts.items():
             for row_index, row in enumerate(layout):
@@ -38,6 +39,9 @@ class Level:
                         if style == 'grass':
                             random_grass_image = choice(graphics['grass'])
                             Tile((x,y), [self.visible_sprites, self.obstacles_sprites], 'grass', random_grass_image)
+                        if style == 'object':
+                            obj_surface = graphics['objects'][int(column)]
+                            Tile((x,y), [self.visible_sprites, self.obstacles_sprites], 'object', obj_surface)
         #         if column == 'x':
         #             Tile((x, y), [self.visible_sprites, self.obstacles_sprites])
         #         elif column == 'p':
