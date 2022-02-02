@@ -63,7 +63,7 @@ class Level:
                                                 self.destroy_attack,
                                                 self.create_magic)
                             else:
-                                enemy = Enemy('monster', (x, y), [self.visible_sprites])
+                                enemy = Enemy('squid', (x, y), [self.visible_sprites])
 
     def create_attack(self):
         self.current_attack = Weapon(self.player, [self.visible_sprites])
