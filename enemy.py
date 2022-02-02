@@ -137,7 +137,7 @@ class Enemy(Entity):
             if current_time - self.hit_time >= self.invincibility_cooldown:
                 self.vulnerable = True
 
-    def get_damage(self, player, attack_type):
+    def get_damage(self, player: Player, attack_type):
         if self.vulnerable:
             self.distance, self.direction = self.find_player(player)
             if attack_type == 'weapon':

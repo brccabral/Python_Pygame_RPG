@@ -25,7 +25,7 @@ class MagicController:
             elif player_direction == 'left': direction = pygame.math.Vector2(-1, 0)
             elif player_direction == 'up': direction = pygame.math.Vector2(0, -1)
             else: direction = pygame.math.Vector2(0, 1)
-            print(direction)
+            # print(direction)
             for i in range(1, 6):
                 if direction.x: # horizontal
                     offset_x = (direction.x * i) * TILESIZE
