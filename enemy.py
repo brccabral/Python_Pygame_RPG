@@ -7,6 +7,14 @@ from player import Player
 
 class Enemy(Entity):
     def __init__(self, monster_name, pos, groups, obstacles_sprites):
+        """Create an enemy
+
+        Args:
+            monster_name (str): kind of monster
+            pos (tuple(int,int)): position x, y
+            groups (list[pygame Group]): groups that this object belongs to, or game category
+            obstacles_sprites (pygame Group): [description]
+        """
 
         # general setup
         super().__init__(groups)

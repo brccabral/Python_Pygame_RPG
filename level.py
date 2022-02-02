@@ -21,6 +21,8 @@ class Level:
 
         # attack sprites
         self.current_attack = None
+        self.attack_sprites = pygame.sprite.Group()
+        self.attackable_sprites = pygame.sprite.Group()
 
         # sprite setup
         self.create_map()
@@ -49,7 +51,11 @@ class Level:
                             Tile((x,y), [self.obstacles_sprites], 'invisible')
                         elif style == 'grass':
                             random_grass_image = choice(graphics['grass'])
-                            Tile((x,y), [self.visible_sprites, self.obstacles_sprites], 'grass', random_grass_image)
+                            Tile(
+                                (x,y), 
+                                [self.visible_sprites, self.obstacles_sprites, self.attackable_sprites], 
+                                'grass', 
+                                random_grass_image)
                         elif style == 'object':
                             obj_surface = graphics['objects'][int(column)]
                             Tile((x,y), [self.visible_sprites, self.obstacles_sprites], 'object', obj_surface)
@@ -67,7 +73,11 @@ class Level:
                                 elif column == '391': monster_name = 'spirit'
                                 elif column == '392': monster_name = 'raccoon'
                                 else: monster_name = 'squid'
-                                enemy = Enemy(monster_name, (x, y), [self.visible_sprites], self.obstacles_sprites)
+                                enemy = Enemy(
+                                            monster_name, 
+                                            (x, y), 
+                                            [self.visible_sprites, self.attackable_sprites], 
+                                            self.obstacles_sprites)
 
     def create_attack(self):
         self.current_attack = Weapon(self.player, [self.visible_sprites])

@@ -2,6 +2,11 @@ import pygame
 
 class Entity(pygame.sprite.Sprite):
     def __init__(self, groups):
+        """Create an entity
+
+        Args:
+            groups (list[pygame Group]): groups that this object belongs to, or game category
+        """
         super().__init__(groups)
 
         # movement
