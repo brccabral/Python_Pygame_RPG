@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Tuple
 import pygame
 from settings import *
 from entity import Entity
@@ -71,7 +71,15 @@ class Enemy(Entity):
         else:
             self.status = 'idle'
         
-    def find_player(self, player: Player):
+    def find_player(self, player: Player) -> Tuple[float, pygame.math.Vector2]:
+        """get players distance and direction
+
+        Args:
+            player (Player): player object
+
+        Returns:
+            tuple(float, Vector2): distance, direction
+        """
         enemy_vector = pygame.math.Vector2(self.rect.center)
         player_vector = pygame.math.Vector2(player.rect.center)
         distance = (player_vector - enemy_vector).magnitude()
@@ -113,16 +121,22 @@ class Enemy(Entity):
 
     def get_damage(self, player, attack_type):
         if self.vulnerable:
+            self.distance, self.direction = self.find_player(player)
             if attack_type == 'weapon':
                 self.health -= player.get_full_weapon_damage()
             self.vulnerable = False
             self.hit_time = pygame.time.get_ticks()
+
+    def hit_reaction(self):
+        if not self.vulnerable:
+            self.direction *= -self.resistance
 
     def check_death(self):
         if self.health <= 0:
             self.kill()
 
     def update(self):
+        self.hit_reaction()
         self.move(self.speed)
         self.animate()
         self.cooldowns()
