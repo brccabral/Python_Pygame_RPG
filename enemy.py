@@ -1,4 +1,4 @@
-from typing import Dict, List, Tuple
+from typing import Callable, Dict, List, Tuple
 import pygame
 from settings import *
 from entity import Entity
@@ -6,7 +6,12 @@ from support import import_folder
 from player import Player
 
 class Enemy(Entity):
-    def __init__(self, monster_name, pos, groups, obstacles_sprites):
+    def __init__(self, 
+            monster_name: str, 
+            pos: Tuple, 
+            groups: List[pygame.sprite.Group], 
+            obstacles_sprites: pygame.sprite.Group, 
+            damage_player: Callable):
         """Create an enemy
 
         Args:
@@ -47,6 +52,7 @@ class Enemy(Entity):
         self.can_attack = True
         self.attack_time = None
         self.attack_cooldown = 400
+        self.damage_player = damage_player
 
         # invincibility timer
         self.vulnerable = True
@@ -92,6 +98,7 @@ class Enemy(Entity):
     def actions(self, player: Player):
         if self.status == 'attack':
             self.attack_time = pygame.time.get_ticks()
+            self.damage_player(self.attack_damage, self.attack_type)
         elif self.status == 'move':
             self.distance, self.direction = self.find_player(player)
         else:

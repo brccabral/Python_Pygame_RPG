@@ -53,7 +53,11 @@ class Player(Entity):
         self.speed = self.stats['speed']
         self.exp = 123
 
-    
+        # damge timer
+        self.vulnerable = True
+        self.hurt_time = None
+        self.invulnerability_cooldown = 500
+
     def import_player_assets(self):
         character_path = 'graphics/player'
         self.animations: Dict[str, List[pygame.Surface]] = dict()
@@ -170,6 +174,10 @@ class Player(Entity):
         if not self.can_switch_magic:
             if current_time - self.magic_switch_time >= self.switch_cooldown:
                 self.can_switch_magic = True
+        
+        if not self.vulnerable:
+            if current_time - self.hurt_time >= self.invulnerability_cooldown:
+                self.vulnerable = True
     
     def get_full_weapon_damage(self):
         base_damage = self.stats['attack']
