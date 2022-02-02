@@ -35,6 +35,11 @@ class Enemy(Entity):
         self.notice_radius = monster_info['notice_radius']
         self.attack_type = monster_info['attack_type']
 
+        # player interation
+        self.can_attack = True
+        self.attack_time = None
+        self.attack_cooldown = 400
+
     def import_graphics(self, name):
         self.animations: Dict[str, List[pygame.Surface]] = {'idle': [], 'move': [], 'attack': []}
         path = f'graphics/monsters/{name}/'
@@ -44,7 +49,9 @@ class Enemy(Entity):
     def get_status(self, player: Player):
         distance, direction = self.find_player(player)
 
-        if distance <= self.attack_radius:
+        if distance <= self.attack_radius and self.can_attack:
+            if self.status != 'attack':
+                self.frame_index = 0
             self.status = 'attack'
         elif distance <= self.notice_radius:
             self.status = 'move'
@@ -64,10 +71,11 @@ class Enemy(Entity):
     def update(self):
         self.move(self.speed)
         self.animate()
+        self.cooldowns()
 
     def actions(self, player: Player):
         if self.status == 'attack':
-            print('attack')
+            self.attack_time = pygame.time.get_ticks()
         elif self.status == 'move':
             self.distance, self.direction = self.find_player(player)
         else:
@@ -78,10 +86,18 @@ class Enemy(Entity):
 
         self.frame_index += self.animation_speed
         if self.frame_index >= len(animation):
+            if self.status == 'attack':
+                self.can_attack = False
             self.frame_index = 0
         
         self.image = animation[int(self.frame_index)]
         self.rect = self.image.get_rect(center = self.hitbox.center)
+
+    def cooldowns(self):
+        if not self.can_attack:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.attack_time >= self.attack_cooldown:
+                self.can_attack = True
 
     def enemy_update(self, player: Player):
         self.get_status(player)
