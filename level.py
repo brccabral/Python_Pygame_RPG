@@ -17,14 +17,16 @@ class Level:
         self.create_map()
     
     def create_map(self):
-        for row_index, row in enumerate(WORLD_MAP):
-            for column_index, column in enumerate(row):
-                x = column_index * TILESIZE
-                y = row_index * TILESIZE
-                if column == 'x':
-                    Tile((x, y), [self.visible_sprites, self.obstacles_sprites])
-                elif column == 'p':
-                    self.player = Player((x, y), [self.visible_sprites], self.obstacles_sprites)
+        # for row_index, row in enumerate(WORLD_MAP):
+        #     for column_index, column in enumerate(row):
+        #         x = column_index * TILESIZE
+        #         y = row_index * TILESIZE
+        #         if column == 'x':
+        #             Tile((x, y), [self.visible_sprites, self.obstacles_sprites])
+        #         elif column == 'p':
+        #             self.player = Player((x, y), [self.visible_sprites], self.obstacles_sprites)
+                    
+        self.player = Player((2000, 1430), [self.visible_sprites], self.obstacles_sprites)
 
 
     def run(self):
