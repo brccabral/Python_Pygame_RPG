@@ -1,7 +1,8 @@
+from random import choice
 from debug import debug
 import pygame
 from settings import *
-from support import import_csv_layout
+from support import import_csv_layout, import_folder
 from tile import Tile
 from player import Player
 
@@ -19,7 +20,12 @@ class Level:
     
     def create_map(self):
         layouts = {
-            'boundary': import_csv_layout('map/map_FloorBlocks.csv')
+            'boundary': import_csv_layout('map/map_FloorBlocks.csv'),
+            'grass': import_csv_layout('map/map_Grass.csv'),
+            'object': import_csv_layout('map/map_LargeObjects.csv'),
+        }
+        graphics = {
+            'grass': import_folder('graphics/grass')
         }
         for style, layout in layouts.items():
             for row_index, row in enumerate(layout):
@@ -29,6 +35,9 @@ class Level:
                         y = row_index * TILESIZE
                         if style == 'boundary':
                             Tile((x,y), [self.obstacles_sprites], 'invisible')
+                        if style == 'grass':
+                            random_grass_image = choice(graphics['grass'])
+                            Tile((x,y), [self.visible_sprites, self.obstacles_sprites], 'grass', random_grass_image)
         #         if column == 'x':
         #             Tile((x, y), [self.visible_sprites, self.obstacles_sprites])
         #         elif column == 'p':
