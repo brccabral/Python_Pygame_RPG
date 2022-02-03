@@ -121,10 +121,13 @@ class Item:
     def trigger(self, player: Player):
         upgrade_attributte = list(player.stats.keys())[self.index]
         
-        if player.exp >= player.upgrade_cost[upgrade_attributte]:
+        if player.exp >= player.upgrade_cost[upgrade_attributte] and player.stats[upgrade_attributte] < player.max_stats[upgrade_attributte]:
             player.exp -= player.upgrade_cost[upgrade_attributte]
             player.stats[upgrade_attributte] *= 1.2
             player.upgrade_cost[upgrade_attributte] *= 1.4
+        
+        if player.stats[upgrade_attributte] > player.max_stats[upgrade_attributte]:
+            player.stats[upgrade_attributte] = player.max_stats[upgrade_attributte]
 
     def display(self, surface: pygame.Surface, selection_num, name, value, max_value, cost):
         is_selected = self.index == selection_num
