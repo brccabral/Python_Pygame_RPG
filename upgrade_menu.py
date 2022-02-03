@@ -12,6 +12,7 @@ class UpgradeMenu:
         self.attribute_number = len(player.stats)
         self.attribute_names = list(player.stats.keys())
         self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE)
+        self.max_values = list(player.max_stats.values())
 
         # selection system
         self.selection_index = 0
@@ -70,8 +71,14 @@ class UpgradeMenu:
         self.input()
         self.selection_cooldown()
 
-        for item in self.item_list:
-            item.display(self.display_surface, 0, 'test', 1, 2, 3)
+        for index, item in enumerate(self.item_list):
+
+            # get attributes
+            name = self.attribute_names[index]
+            value = self.player.get_value_by_index(index)
+            max_value = self.max_values[index]
+            cost = self.player.get_cost_by_index(index)
+            item.display(self.display_surface, self.selection_index, name, value, max_value, cost)
 
 class Item:
     def __init__(self, left, top, width, height, index, font):

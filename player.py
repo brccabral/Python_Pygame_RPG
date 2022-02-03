@@ -204,6 +204,12 @@ class Player(Entity):
         else:
             self.energy = self.stats['energy']
 
+    def get_value_by_index(self, index):
+        return list(self.stats.values())[index]
+
+    def get_cost_by_index(self, index):
+        return list(self.upgrade_cost.values())[index]
+
     def update(self):
         self.input()
         self.move(self.speed)
