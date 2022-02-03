@@ -81,13 +81,25 @@ class UpgradeMenu:
             item.display(self.display_surface, self.selection_index, name, value, max_value, cost)
 
 class Item:
-    def __init__(self, left, top, width, height, index, font):
+    def __init__(self, left, top, width, height, index, font: pygame.font.Font):
         self.rect = pygame.Rect(left, top, width, height)
         self.index = index
         self.font = font
     
+    def display_names(self, surface: pygame.Surface, name, cost, selected):
+        
+        # title
+        title_surface = self.font.render(name, False, TEXT_COLOR)
+        title_rect = title_surface.get_rect(midtop = self.rect.midtop + pygame.math.Vector2(0, 20))
+
+        # cost
+
+        # draw
+        surface.blit(title_surface, title_rect)
+
     def display(self, surface, selection_num, name, value, max_value, cost):
         pygame.draw.rect(surface, UI_BG_COLOR, self.rect)
+        self.display_names(surface, name, cost, selection_num)
         
 
 if __name__ == '__main__':
