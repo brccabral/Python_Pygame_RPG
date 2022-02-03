@@ -1,3 +1,4 @@
+from typing import List
 import pygame
 from settings import *
 from player import Player
@@ -16,6 +17,12 @@ class UpgradeMenu:
         self.selection_index = 0
         self.selection_time = None
         self.can_select = True
+
+        # item dimensions
+        self.width, self.height = self.display_surface.get_size()
+        self.width = self.width // 6
+        self.height = self.height * 0.8
+        self.create_items()
     
     def input(self):
         keys = pygame.key.get_pressed()
@@ -33,7 +40,7 @@ class UpgradeMenu:
             if keys[pygame.K_SPACE]:
                 self.can_select = False
                 self.selection_time = pygame.time.get_ticks()
-                print(self.selection_index)
+                # print(self.selection_index)
 
     def selection_cooldown(self):
         if not self.can_select:
@@ -41,10 +48,40 @@ class UpgradeMenu:
             if current_time - self.selection_time >= 300:
                 self.can_select = True
 
+    def create_items(self):
+        self.item_list: List[Item] = []
+        for item in range(self.attribute_number):
+            index = item
+            # horizontal position
+            full_width = self.display_surface.get_size()[0]
+            increment = full_width // self.attribute_number
+            left = (item * increment) + (increment - self.width) // 2
+
+            # vertical posistion
+            top = self.display_surface.get_size()[1] * 0.1
+
+            # create object
+            item = Item(left, top, self.width, self.height, index, self.font)
+            self.item_list.append(item)
+
+
     def display(self):
-        self.display_surface.fill('black')
+        # self.display_surface.fill('black')
         self.input()
         self.selection_cooldown()
+
+        for item in self.item_list:
+            item.display(self.display_surface, 0, 'test', 1, 2, 3)
+
+class Item:
+    def __init__(self, left, top, width, height, index, font):
+        self.rect = pygame.Rect(left, top, width, height)
+        self.index = index
+        self.font = font
+    
+    def display(self, surface, selection_num, name, value, max_value, cost):
+        pygame.draw.rect(surface, UI_BG_COLOR, self.rect)
+        
 
 if __name__ == '__main__':
     from main import run_game
