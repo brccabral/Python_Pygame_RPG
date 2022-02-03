@@ -51,7 +51,6 @@ class Player(Entity):
         self.upgrade_cost = {'health': 100, 'energy': 100, 'attack': 100, 'magic' : 100, 'speed': 100}
         self.health = self.stats['health']-50
         self.energy = self.stats['energy']-10
-        self.speed = self.stats['speed']
         self.exp = 10000
 
         # damge timer
@@ -211,7 +210,7 @@ class Player(Entity):
 
     def update(self):
         self.input()
-        self.move(self.speed)
+        self.move(self.stats['speed'])
         self.cooldowns()
         self.get_status()
         self.animate()
