@@ -1,41 +1,45 @@
-import pygame, sys
+import pygame
+import sys
 from settings import *
 from level import Level
 
+
 class Game:
-	def __init__(self):
-		  
-		# general setup
-		pygame.init()
-		self.screen = pygame.display.set_mode((WIDTH,HEIGTH))
-		pygame.display.set_caption('RPG Python')
-		self.clock = pygame.time.Clock()
+    def __init__(self):
 
-		self.level = Level()
+        # general setup
+        pygame.init()
+        self.screen = pygame.display.set_mode((WIDTH, HEIGTH))
+        pygame.display.set_caption('RPG Python')
+        self.clock = pygame.time.Clock()
 
-		# sound
-		main_sound = pygame.mixer.Sound('audio/main.ogg')
-		main_sound.set_volume(0.5)
-		main_sound.play(loops = -1)
-	
-	def run(self):
-		while True:
-			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
-					pygame.quit()
-					sys.exit()
-				if event.type == pygame.KEYDOWN:
-					if event.key == pygame.K_m:
-						self.level.toggle_menu()
+        self.level = Level()
 
-			self.screen.fill(WATER_COLOR)
-			self.level.run()
-			pygame.display.update()
-			self.clock.tick(FPS)
+        # sound
+        main_sound = pygame.mixer.Sound('audio/main.ogg')
+        main_sound.set_volume(0.5)
+        main_sound.play(loops=-1)
+
+    def run(self):
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_m:
+                        self.level.toggle_menu()
+
+            self.screen.fill(WATER_COLOR)
+            self.level.run()
+            pygame.display.update()
+            self.clock.tick(FPS)
+
 
 def run_game():
-	game = Game()
-	game.run()
+    game = Game()
+    game.run()
+
 
 if __name__ == '__main__':
-	run_game()
+    run_game()

@@ -12,6 +12,7 @@ from enemy import Enemy
 from magic import MagicController
 from upgrade_menu import UpgradeMenu
 
+
 class Level:
     def __init__(self):
 
@@ -34,12 +35,13 @@ class Level:
 
         # user interface
         self.ui = UI()
-        self.upgrade_menu = UpgradeMenu(self.player) # self.player is created in self.create_map()
+        # self.player is created in self.create_map()
+        self.upgrade_menu = UpgradeMenu(self.player)
 
         # particles
         self.animation_controller = AnimationController()
         self.magic_controller = MagicController(self.animation_controller)
-    
+
     def create_map(self):
         layouts = {
             'boundary': import_csv_layout('map/map_FloorBlocks.csv'),
@@ -58,48 +60,57 @@ class Level:
                         x = column_index * TILESIZE
                         y = row_index * TILESIZE
                         if style == 'boundary':
-                            Tile((x,y), [self.obstacles_sprites], 'invisible')
+                            Tile((x, y), [self.obstacles_sprites], 'invisible')
                         elif style == 'grass':
                             random_grass_image = choice(graphics['grass'])
                             Tile(
-                                (x,y), 
-                                [self.visible_sprites, self.obstacles_sprites, self.attackable_sprites], 
-                                'grass', 
+                                (x, y),
+                                [self.visible_sprites, self.obstacles_sprites,
+                                    self.attackable_sprites],
+                                'grass',
                                 random_grass_image)
                         elif style == 'object':
                             obj_surface = graphics['objects'][int(column)]
-                            Tile((x,y), [self.visible_sprites, self.obstacles_sprites], 'object', obj_surface)
+                            Tile(
+                                (x, y), [self.visible_sprites, self.obstacles_sprites], 'object', obj_surface)
                         elif style == 'entities':
                             if column == '394':
                                 self.player = Player(
-                                                (x, y), 
-                                                [self.visible_sprites], 
-                                                self.obstacles_sprites, 
-                                                self.create_attack, 
-                                                self.destroy_attack,
-                                                self.create_magic)
+                                    (x, y),
+                                    [self.visible_sprites],
+                                    self.obstacles_sprites,
+                                    self.create_attack,
+                                    self.destroy_attack,
+                                    self.create_magic)
                             else:
-                                if   column == '390': monster_name = 'bamboo'
-                                elif column == '391': monster_name = 'spirit'
-                                elif column == '392': monster_name = 'raccoon'
-                                else: monster_name = 'squid'
+                                if column == '390':
+                                    monster_name = 'bamboo'
+                                elif column == '391':
+                                    monster_name = 'spirit'
+                                elif column == '392':
+                                    monster_name = 'raccoon'
+                                else:
+                                    monster_name = 'squid'
                                 enemy = Enemy(
-                                            monster_name, 
-                                            (x, y), 
-                                            [self.visible_sprites, self.attackable_sprites], 
-                                            self.obstacles_sprites,
-                                            self.damge_player,
-                                            self.trigger_death_particles,
-                                            self.add_exp)
+                                    monster_name,
+                                    (x, y),
+                                    [self.visible_sprites, self.attackable_sprites],
+                                    self.obstacles_sprites,
+                                    self.damge_player,
+                                    self.trigger_death_particles,
+                                    self.add_exp)
 
     def create_attack(self):
-        self.current_attack = Weapon(self.player, [self.visible_sprites, self.attack_sprites])
+        self.current_attack = Weapon(
+            self.player, [self.visible_sprites, self.attack_sprites])
 
     def create_magic(self, style, strength, cost):
         if style == 'heal':
-            self.magic_controller.heal(self.player, strength, cost, [self.visible_sprites])
+            self.magic_controller.heal(self.player, strength, cost, [
+                                       self.visible_sprites])
         elif style == 'flame':
-            self.magic_controller.flame(self.player, cost, [self.visible_sprites, self.attack_sprites])
+            self.magic_controller.flame(
+                self.player, cost, [self.visible_sprites, self.attack_sprites])
 
     def destroy_attack(self):
         if self.current_attack:
@@ -109,17 +120,20 @@ class Level:
     def player_attack_logic(self):
         if self.attack_sprites:
             for attack_sprite in self.attack_sprites:
-                collision_sprites = pygame.sprite.spritecollide(attack_sprite, self.attackable_sprites, False)
+                collision_sprites = pygame.sprite.spritecollide(
+                    attack_sprite, self.attackable_sprites, False)
                 if collision_sprites:
                     for target_sprite in collision_sprites:
                         if target_sprite.sprite_type == 'grass':
                             pos = target_sprite.rect.center
                             offset = pygame.math.Vector2(0, 75)
-                            for leaf in range(randint(3,6)):
-                                self.animation_controller.create_grass_particles(pos - offset, [self.visible_sprites])
+                            for leaf in range(randint(3, 6)):
+                                self.animation_controller.create_grass_particles(
+                                    pos - offset, [self.visible_sprites])
                             target_sprite.kill()
                         elif target_sprite.sprite_type == 'enemy':
-                            target_sprite.get_damage(self.player, attack_sprite.sprite_type)
+                            target_sprite.get_damage(
+                                self.player, attack_sprite.sprite_type)
 
     def damge_player(self, amount, attack_type):
         if self.player.vulnerable:
@@ -127,20 +141,23 @@ class Level:
             self.player.vulnerable = False
             self.player.hurt_time = pygame.time.get_ticks()
             # spawn particles
-            self.animation_controller.create_particles(attack_type, self.player.rect.center, [self.visible_sprites])
+            self.animation_controller.create_particles(
+                attack_type, self.player.rect.center, [self.visible_sprites])
 
     def trigger_death_particles(self, pos, particle_type):
-        self.animation_controller.create_particles(particle_type, pos, [self.visible_sprites])
+        self.animation_controller.create_particles(
+            particle_type, pos, [self.visible_sprites])
 
     def add_exp(self, amount):
         self.player.exp += amount
 
     def toggle_menu(self):
         self.game_paused = not self.game_paused
-        
+
     def run(self):
         # update and draw the level
-        self.visible_sprites.custom_draw(self.player) # uses YSortCameraGroup to draw from player position
+        # uses YSortCameraGroup to draw from player position
+        self.visible_sprites.custom_draw(self.player)
         self.ui.display(self.player)
 
         if self.game_paused:
@@ -151,6 +168,7 @@ class Level:
             self.visible_sprites.enemy_update(self.player)
             self.player_attack_logic()
         # debug(self.player.direction)
+
 
 class YSortCameraGroup(pygame.sprite.Group):
     # overlap objects in Y corrdinate to create sense of depth
@@ -164,9 +182,10 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.offset = pygame.math.Vector2()
 
         # creating the floor
-        self.floor_surface = pygame.image.load('graphics/tilemap/ground.png').convert_alpha()
-        self.floor_rect = self.floor_surface.get_rect(topleft = (0,0))
-    
+        self.floor_surface = pygame.image.load(
+            'graphics/tilemap/ground.png').convert_alpha()
+        self.floor_rect = self.floor_surface.get_rect(topleft=(0, 0))
+
     def custom_draw(self, player: Player):
 
         # get the offset from player's current position
@@ -178,16 +197,18 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.display_surface.blit(self.floor_surface, floor_offset_pos)
 
         # move all sprites accordingly to player position
-        # sorted makes sure that sprites on top of the screen 
-        # are drawn behind 
-        for sprite in sorted(self.sprites(), key = lambda sprite: sprite.rect.centery):
+        # sorted makes sure that sprites on top of the screen
+        # are drawn behind
+        for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
 
     def enemy_update(self, player: Player):
-        enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite, 'sprite_type') if sprite.sprite_type == 'enemy']
+        enemy_sprites = [sprite for sprite in self.sprites() if hasattr(
+            sprite, 'sprite_type') if sprite.sprite_type == 'enemy']
         for enemy in enemy_sprites:
             enemy.enemy_update(player)
+
 
 if __name__ == '__main__':
     from main import run_game

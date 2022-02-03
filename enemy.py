@@ -5,15 +5,16 @@ from entity import Entity
 from support import import_folder
 from player import Player
 
+
 class Enemy(Entity):
-    def __init__(self, 
-            monster_name: str, 
-            pos: Tuple, 
-            groups: List[pygame.sprite.Group], 
-            obstacles_sprites: pygame.sprite.Group, 
-            damage_player: Callable,
-            trigger_death_particles: Callable,
-            add_exp: Callable):
+    def __init__(self,
+                 monster_name: str,
+                 pos: Tuple,
+                 groups: List[pygame.sprite.Group],
+                 obstacles_sprites: pygame.sprite.Group,
+                 damage_player: Callable,
+                 trigger_death_particles: Callable,
+                 add_exp: Callable):
         """Create an enemy
 
         Args:
@@ -33,14 +34,14 @@ class Enemy(Entity):
         self.status = 'idle'
         self.import_graphics(monster_name)
         self.image = self.animations[self.status][self.frame_index]
-        self.rect = self.image.get_rect(topleft = pos)
+        self.rect = self.image.get_rect(topleft=pos)
 
         # movement
-        self.rect = self.image.get_rect(topleft = pos)
+        self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(0, -10)
         self.obstacles_sprites = obstacles_sprites
 
-		# stats
+        # stats
         self.monster_name = monster_name
         monster_info = monster_data[self.monster_name]
         self.health = monster_info['health']
@@ -74,7 +75,8 @@ class Enemy(Entity):
         self.attack_sound.set_volume(0.3)
 
     def import_graphics(self, name):
-        self.animations: Dict[str, List[pygame.Surface]] = {'idle': [], 'move': [], 'attack': []}
+        self.animations: Dict[str, List[pygame.Surface]] = {
+            'idle': [], 'move': [], 'attack': []}
         path = f'graphics/monsters/{name}/'
         for animation in self.animations.keys():
             self.animations[animation] = import_folder(path + animation)
@@ -90,7 +92,7 @@ class Enemy(Entity):
             self.status = 'move'
         else:
             self.status = 'idle'
-        
+
     def find_player(self, player: Player) -> Tuple[float, pygame.math.Vector2]:
         """get players distance and direction
 
@@ -118,7 +120,7 @@ class Enemy(Entity):
             self.distance, self.direction = self.find_player(player)
         else:
             self.direction = pygame.math.Vector2()
-    
+
     def animate(self):
         animation = self.animations[self.status]
 
@@ -127,9 +129,9 @@ class Enemy(Entity):
             if self.status == 'attack':
                 self.can_attack = False
             self.frame_index = 0
-        
+
         self.image = animation[int(self.frame_index)]
-        self.rect = self.image.get_rect(center = self.hitbox.center)
+        self.rect = self.image.get_rect(center=self.hitbox.center)
 
         if not self.vulnerable:
             # flicker
@@ -143,7 +145,7 @@ class Enemy(Entity):
         if not self.can_attack:
             if current_time - self.attack_time >= self.attack_cooldown:
                 self.can_attack = True
-        
+
         if not self.vulnerable:
             if current_time - self.hit_time >= self.invincibility_cooldown:
                 self.vulnerable = True
@@ -180,6 +182,7 @@ class Enemy(Entity):
     def enemy_update(self, player: Player):
         self.get_status(player)
         self.actions(player)
+
 
 if __name__ == '__main__':
     from main import run_game
