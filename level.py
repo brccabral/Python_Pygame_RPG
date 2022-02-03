@@ -10,6 +10,7 @@ from ui import UI
 from weapon import Weapon
 from enemy import Enemy
 from magic import MagicController
+from upgrade_menu import UpgradeMenu
 
 class Level:
     def __init__(self):
@@ -33,6 +34,7 @@ class Level:
 
         # user interface
         self.ui = UI()
+        self.upgrade_menu = UpgradeMenu(self.player) # self.player is created in self.create_map()
 
         # particles
         self.animation_controller = AnimationController()
@@ -143,7 +145,7 @@ class Level:
 
         if self.game_paused:
             # display upgrade menu
-            pass
+            self.upgrade_menu.display()
         else:
             self.visible_sprites.update()
             self.visible_sprites.enemy_update(self.player)
