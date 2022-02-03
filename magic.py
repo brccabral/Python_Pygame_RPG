@@ -7,9 +7,14 @@ from player import Player
 class MagicController:
     def __init__(self, animation_controller: AnimationController):
         self.animation_controller = animation_controller
+        self.sounds = {
+            'heal': pygame.mixer.Sound('audio/heal.wav'),
+            'flame': pygame.mixer.Sound('audio/Fire.wav'),
+        }
     
     def heal(self, player: Player, strength, cost, groups):
         if player.energy >= cost:
+            self.sounds['heal'].play()
             player.health += strength
             player.energy -= cost
             if player.health >= player.stats['health']:
@@ -19,6 +24,7 @@ class MagicController:
 
     def flame(self, player: Player, cost, groups):
         if player.energy >= cost:
+            self.sounds['flame'].play()
             player.energy -= cost
             player_direction = player.status.split('_')[0]
             if player_direction == 'right': direction = pygame.math.Vector2(1, 0)
@@ -26,6 +32,7 @@ class MagicController:
             elif player_direction == 'up': direction = pygame.math.Vector2(0, -1)
             else: direction = pygame.math.Vector2(0, 1)
             # print(direction)
+            self.animation_controller.create_particles('aura', player.rect.center, groups)
             for i in range(1, 6):
                 if direction.x: # horizontal
                     offset_x = (direction.x * i) * TILESIZE
